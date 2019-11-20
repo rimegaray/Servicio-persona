@@ -12,7 +12,7 @@ public interface PersonService {
 
 	public Flux<Person> findAll();
 	
-	public Mono<Person> findAllById(String id);
+	public Mono<Person> findById(String id);
 	
 	public Mono<Void> delete(Person persona);
 	

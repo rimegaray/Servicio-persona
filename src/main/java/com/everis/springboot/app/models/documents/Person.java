@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,8 +15,8 @@ public class Person {
 	@Id
 	private String id;
 	
-	@NotNull
-	private boolean isStudent;
+	
+	private boolean student;
 	
 	private String parentOne;
 	
@@ -42,9 +41,9 @@ public class Person {
 	@NotEmpty
 	private String numberDocument;
 	
-	public Person(@NotNull boolean isStudent, @NotEmpty String fullName, @NotEmpty String gender, Date dateOfBirth,
+	public Person(boolean student, @NotEmpty String fullName, @NotEmpty String gender, Date dateOfBirth,
 			@NotEmpty String typeDocument, @NotEmpty String numberDocument) {		
-		this.isStudent = isStudent;
+		this.student = student;
 		this.fullName = fullName;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
@@ -59,12 +58,16 @@ public class Person {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 	public boolean isStudent() {
-		return isStudent;
+		return student;
 	}
-	public void setStudent(boolean isStudent) {
-		this.isStudent = isStudent;
+
+	public void setStudent(boolean student) {
+		this.student = student;
 	}
+
+
 	public String getParentOne() {
 		return parentOne;
 	}

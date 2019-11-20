@@ -21,7 +21,7 @@ public class PersonServiceImpl implements PersonService{
 	}
 
 	@Override
-	public Mono<Person> findAllById(String id) {
+	public Mono<Person> findById(String id) {
 		return dao.findById(id);
 	}
 

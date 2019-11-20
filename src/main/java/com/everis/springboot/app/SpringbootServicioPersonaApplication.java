@@ -29,6 +29,8 @@ public class SpringbootServicioPersonaApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		/*Codigo para registrar personas en data dura.
+		 *
+		 
 		  Flux.just(new Person(true, "Juan Carlos Rime Garay", "Masculino", new Date(), "DNI", "76563356"),
 				new Person(true, "Anderson Miguel Flores del Huerto", "Masculino",new Date() , "DNI", "76563312"),
 				new Person(true, "Jhonatan Maicelo Rojas Falcon", "Masculino", new Date(), "DNI", "98563356"),
@@ -36,7 +38,7 @@ public class SpringbootServicioPersonaApplication implements CommandLineRunner{
 				new Person(true, "Maria Asto Javier", "Femenino", new Date(), "DNI", "76563311"))
 		.flatMap(service::savePerson)
 		.subscribe(p->log.info("Se registro una persona"));
-		*/
+		 */
 	}
 
 }
