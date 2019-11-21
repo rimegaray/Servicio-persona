@@ -1,5 +1,7 @@
 package com.everis.springboot.app.controllers;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,12 +39,12 @@ public class PersonController {
 	
 	@GetMapping("/document/{document}")
 	public Mono<Person> findByDocument(@PathVariable String document){
-		return service.findAll().filter(p->p.getNumberDocument().equals(document)).next();
+		return service.findByNumberDocument(document);
 	}
 	
 	@GetMapping("/name/{name}")
-	public Mono<Person> findByName(@PathVariable String name){
-		return service.findAll().filter(p->p.getFullName().contains(name)).next();
+	public Flux<Person> findByName(@PathVariable String name){
+		return service.findAll().filter(p->p.getFullName().contains(name));
 	}
 	
 	@PostMapping
@@ -63,7 +65,6 @@ public class PersonController {
 			p.setTypeDocument(person.getTypeDocument());
 			p.setParentOne(person.getParentOne());
 			p.setParentTwo(person.getParentTwo());
-			p.setSibling(person.getSibling());
 			p.setSpouse(person.getSpouse());
 			p.setStudent(person.isStudent());
 			return p;
@@ -86,24 +87,24 @@ public class PersonController {
 	public Mono<Person> addRelative(@PathVariable String id,
 			@PathVariable String nameMember,@RequestBody Person relative){
 		
-		//Se guarda el familiar como nueva Persona y se actualiza a la persona por id
-		//String id: ID de la persona a la que se desea agregar el familiar.		
-		//String nameMember: el nombre de la relacion que tiene el nuevo familiar. 
-		//Person relative: El familiar nuevo para registrar
+		/*
+		 * Se guarda el familiar como nueva Persona y se actualiza a la persona por id
+		 * String id: ID de la persona a la que se desea agregar el familiar.		
+		 * String nameMember: el nombre de la relacion que tiene el nuevo familiar. 
+		 * 	Person relative: El familiar nuevo para registrar
+		 */
+		 relative.setRelation(nameMember);
+		 relative.setIdRelative(id);
 		return service.savePerson(relative).flatMap(f->
 				service.findById(id).flatMap(p->{
 					if(nameMember.equals("parentOne")) {
-						p.setParentOne(f.getFullName());
+						p.setParentOne(f.getId());
 					}
 					if(nameMember.equals("parentTwo")) {
-						p.setParentTwo(f.getFullName());
-					}
-					if(nameMember.equals("sibling")) {
-						p.getSibling().add(f.getFullName());
-						//No agrega
+						p.setParentTwo(f.getId());
 					}
 					if(nameMember.equals("spouse")) {
-						p.setSpouse(f.getFullName());
+						p.setSpouse(f.getId());
 					}
 					return Mono.just(p);
 				})
@@ -111,10 +112,9 @@ public class PersonController {
 		).flatMap(service::savePerson);
 	}
 	
-	@GetMapping("findFamily/{fullName}")
-	public Flux<Person> findFamily(@PathVariable String fullName){
-		return service.findAll()
-				.filter(p->p.getFullName().equals(fullName));
+	@GetMapping("/findFamily/{id}")
+	public Flux<Person> findFamily(@PathVariable String id){
+		return service.findByIdRelative(id);
 	}
 	
 

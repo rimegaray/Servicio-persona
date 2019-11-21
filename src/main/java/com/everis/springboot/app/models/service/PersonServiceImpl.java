@@ -1,5 +1,6 @@
 package com.everis.springboot.app.models.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,4 +36,32 @@ public class PersonServiceImpl implements PersonService{
 		return dao.save(persona);
 	}
 
+	@Override
+	public Flux<Person> findFullNameContains(String fullName) {
+		return dao.findByFullNameContains(fullName);
+	}
+
+	@Override
+	public Mono<Person> findByNumberDocument(String document) {
+		return dao.findByNumberDocument(document);
+	}
+
+	public Mono<Person> findParentOne(String id){
+		
+		return dao.findById(id).flatMap(p->{
+			return dao.findById(p.getParentOne());
+		});
+	}
+
+	@Override
+	public Mono<Person> findParentTwo(String id) {
+		return dao.findById(id).flatMap(p->{
+			return dao.findById(p.getParentTwo());
+		});
+	}
+
+	@Override
+	public Flux<Person> findByIdRelative(String id) {
+		return dao.findByIdRelative(id);
+	}
 }

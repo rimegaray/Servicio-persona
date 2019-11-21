@@ -1,7 +1,6 @@
 package com.everis.springboot.app.models.documents;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -18,13 +17,11 @@ public class Person {
 	
 	private boolean student;
 	
-	private String parentOne;
+	private String parentOne="No Registrado";
 	
-	private String parentTwo;
+	private String parentTwo="No Registrado";	
 	
-	private List<String> sibling;
-	
-	private String spouse;
+	private String spouse = "No Registrado";
 	
 	@NotEmpty
 	private String fullName;	
@@ -40,6 +37,10 @@ public class Person {
 	
 	@NotEmpty
 	private String numberDocument;
+	
+	private String idRelative = "No Registrado";
+	
+	private String relation = "No Registrado";
 	
 	public Person(boolean student, @NotEmpty String fullName, @NotEmpty String gender, Date dateOfBirth,
 			@NotEmpty String typeDocument, @NotEmpty String numberDocument) {		
@@ -80,13 +81,7 @@ public class Person {
 	public void setParentTwo(String parentTwo) {
 		this.parentTwo = parentTwo;
 	}
-	public List<String> getSibling() {
-		return sibling;
-	}
-	public void setSibling(List<String> sibling) {
-		this.sibling = sibling;
-	}
-	
+		
 	public String getSpouse() {
 		return spouse;
 	}
@@ -122,6 +117,26 @@ public class Person {
 	}
 	public void setNumberDocument(String numberDocument) {
 		this.numberDocument = numberDocument;
+	}
+
+
+	public String getIdRelative() {
+		return idRelative;
+	}
+
+
+	public void setIdRelative(String idRelative) {
+		this.idRelative = idRelative;
+	}
+
+
+	public String getRelation() {
+		return relation;
+	}
+
+
+	public void setRelation(String relation) {
+		this.relation = relation;
 	}
 	
 	

@@ -18,4 +18,14 @@ public interface PersonService {
 	
 	public Mono<Person> savePerson(Person persona);
 	
+	public Flux<Person> findFullNameContains(String fullName);
+	
+	public Mono<Person> findByNumberDocument(String document);
+	
+	public Mono<Person> findParentOne(String id);
+	
+	public Mono<Person> findParentTwo(String id);
+	
+	public Flux<Person> findByIdRelative(String id);
+	
 }
