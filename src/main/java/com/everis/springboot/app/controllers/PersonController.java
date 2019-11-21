@@ -25,33 +25,33 @@ public class PersonController {
 	@Autowired
 	private PersonService service;
 	
-	@GetMapping("/findAll")
+	@GetMapping
 	public Flux<Person> findAll(){
 		return service.findAll();
 	}
 	
-	@GetMapping("/findById/{id}")
+	@GetMapping("/{id}")
 	public Mono<Person> findById(@PathVariable String id){
 		return service.findById(id);
 	}
 	
-	@GetMapping("/findByDocument/{document}")
+	@GetMapping("/document/{document}")
 	public Mono<Person> findByDocument(@PathVariable String document){
 		return service.findAll().filter(p->p.getNumberDocument().equals(document)).next();
 	}
 	
-	@GetMapping("/findByName/{name}")
+	@GetMapping("/name/{name}")
 	public Mono<Person> findByName(@PathVariable String name){
 		return service.findAll().filter(p->p.getFullName().contains(name)).next();
 	}
 	
-	@PostMapping("/create")
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Person> create(@RequestBody Person person){
 		return service.savePerson(person);
 	}
 	
-	@PutMapping("/edit/{id}")
+	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Person> update(@RequestBody Person person, @PathVariable String id){
 		 
@@ -70,7 +70,7 @@ public class PersonController {
 		}).flatMap(p->service.savePerson(p));
 	}
 	
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Mono<Void> delete(@PathVariable String id){
 		return service.findById(id).flatMap(p -> {
@@ -81,7 +81,41 @@ public class PersonController {
 		}).flatMap(service::delete);
 	}
 	
+	@PutMapping("/addRelative/{id}/{nameMember}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Mono<Person> addRelative(@PathVariable String id,
+			@PathVariable String nameMember,@RequestBody Person relative){
+		
+		//Se guarda el familiar como nueva Persona y se actualiza a la persona por id
+		//String id: ID de la persona a la que se desea agregar el familiar.		
+		//String nameMember: el nombre de la relacion que tiene el nuevo familiar. 
+		//Person relative: El familiar nuevo para registrar
+		return service.savePerson(relative).flatMap(f->
+				service.findById(id).flatMap(p->{
+					if(nameMember.equals("parentOne")) {
+						p.setParentOne(f.getFullName());
+					}
+					if(nameMember.equals("parentTwo")) {
+						p.setParentTwo(f.getFullName());
+					}
+					if(nameMember.equals("sibling")) {
+						p.getSibling().add(f.getFullName());
+						//No agrega
+					}
+					if(nameMember.equals("spouse")) {
+						p.setSpouse(f.getFullName());
+					}
+					return Mono.just(p);
+				})
+				
+		).flatMap(service::savePerson);
+	}
 	
+	@GetMapping("findFamily/{fullName}")
+	public Flux<Person> findFamily(@PathVariable String fullName){
+		return service.findAll()
+				.filter(p->p.getFullName().equals(fullName));
+	}
 	
 
 }
