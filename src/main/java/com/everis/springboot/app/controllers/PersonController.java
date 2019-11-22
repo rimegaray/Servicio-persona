@@ -17,42 +17,77 @@ import org.springframework.web.bind.annotation.RestController;
 import com.everis.springboot.app.models.documents.Person;
 import com.everis.springboot.app.models.service.PersonService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("api/person")
+@Api(value = "persona", description = "API para persona", produces = "application/json")
 public class PersonController {
 	
 	@Autowired
 	private PersonService service;
 	
+	
+	@ApiOperation(value = "Listar todas las personas", notes = "Retorna todo sobre todas las personas")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
+    })
 	@GetMapping
 	public Flux<Person> findAll(){
 		return service.findAll();
 	}
 	
+	
+	@ApiOperation(value = "Buscar persona por Id", notes = "Retorna todo sobre la persona encontrada")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
+    })
 	@GetMapping("/{id}")
 	public Mono<Person> findById(@PathVariable String id){
 		return service.findById(id);
 	}
 	
+	
+	@ApiOperation(value = "Buscar persona por documento ", notes = "Retorna todo sobre la persona encontrada")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
+    })
 	@GetMapping("/document/{document}")
 	public Mono<Person> findByDocument(@PathVariable String document){
 		return service.findByNumberDocument(document);
 	}
 	
+	
+	@ApiOperation(value = "Buscar por nombre", notes = "Retorna las personas con el mismo nombre")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
+    })
 	@GetMapping("/name/{name}")
 	public Flux<Person> findByName(@PathVariable String name){
 		return service.findAll().filter(p->p.getFullName().contains(name));
 	}
 	
+	
+	@ApiOperation(value = "Crear nuevo registro", notes = "Returns all infos")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Creado correctamente")
+    })
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Person> create(@RequestBody Person person){
 		return service.savePerson(person);
 	}
 	
+	
+	@ApiOperation(value = "Actualizar datos de una persona", notes = "Retorna todo de la persona actualizada")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Actualizacion correcta")
+    })
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Person> update(@RequestBody Person person, @PathVariable String id){
@@ -71,6 +106,11 @@ public class PersonController {
 		}).flatMap(p->service.savePerson(p));
 	}
 	
+	
+	@ApiOperation(value = "Eliminar una persona por Id", notes = "Retorna vacío")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Eliminado correctamente")
+    })
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Mono<Void> delete(@PathVariable String id){
@@ -82,6 +122,11 @@ public class PersonController {
 		}).flatMap(service::delete);
 	}
 	
+	
+	@ApiOperation(value = "Agregar familiar", notes = "Retorna el familiar registrado")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Registro guardado correctamente")
+    })
 	@PutMapping("/addRelative/{id}/{nameMember}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Person> addRelative(@PathVariable String id,
@@ -112,6 +157,11 @@ public class PersonController {
 		).flatMap(service::savePerson);
 	}
 	
+	
+	@ApiOperation(value = "Buscar familia de una persona", notes = "Retorna la informacion de todos los familiares")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Encuentra por lo menos a un familiar")
+    })
 	@GetMapping("/findFamily/{id}")
 	public Flux<Person> findFamily(@PathVariable String id){
 		return service.findByIdRelative(id);
