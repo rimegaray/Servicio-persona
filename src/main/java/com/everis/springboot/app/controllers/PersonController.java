@@ -2,6 +2,10 @@ package com.everis.springboot.app.controllers;
 
 
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +37,8 @@ public class PersonController {
 	private PersonService service;
 	
 	
-	@ApiOperation(value = "Listar todas las personas", notes = "Retorna todo sobre todas las personas")
+	@ApiOperation(value = "Listar todas las personas", 
+			notes = "Retorna todo sobre todas las personas")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
@@ -43,7 +48,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Buscar persona por Id", notes = "Retorna todo sobre la persona encontrada")
+	@ApiOperation(value = "Buscar persona por Id", 
+			notes = "Retorna todo sobre la persona encontrada")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
@@ -53,7 +59,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Buscar persona por documento ", notes = "Retorna todo sobre la persona encontrada")
+	@ApiOperation(value = "Buscar persona por documento ",
+			notes = "Retorna todo sobre la persona encontrada")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
@@ -63,7 +70,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Buscar por nombre", notes = "Retorna las personas con el mismo nombre")
+	@ApiOperation(value = "Buscar por nombre",
+			notes = "Retorna las personas con el mismo nombre")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
@@ -84,7 +92,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Actualizar datos de una persona", notes = "Retorna todo de la persona actualizada")
+	@ApiOperation(value = "Actualizar datos de una persona", 
+			notes = "Retorna todo de la persona actualizada")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Actualizacion correcta")
     })
@@ -107,7 +116,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Eliminar una persona por Id", notes = "Retorna vacío")
+	@ApiOperation(value = "Eliminar una persona por Id", 
+			notes = "Retorna vacío")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Eliminado correctamente")
     })
@@ -123,7 +133,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Agregar familiar", notes = "Retorna el familiar registrado")
+	@ApiOperation(value = "Agregar familiar",
+			notes = "Retorna el familiar registrado")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Registro guardado correctamente")
     })
@@ -158,7 +169,8 @@ public class PersonController {
 	}
 	
 	
-	@ApiOperation(value = "Buscar familia de una persona", notes = "Retorna la informacion de todos los familiares")
+	@ApiOperation(value = "Buscar familia de una persona",
+			notes = "Retorna la informacion de todos los familiares")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Encuentra por lo menos a un familiar")
     })
@@ -167,5 +179,23 @@ public class PersonController {
 		return service.findByIdRelative(id);
 	}
 	
+	@ApiOperation(value = "Buscar persona por rango de fechas yyyy-MM-dd", 
+			notes = "Retorna la informacion de todos las personas encontradas")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
+    })
+	@GetMapping("/dateRange/{fecha1}/{fecha2}")
+	public Flux<Person> findByDateRange(@PathVariable String fecha1,@PathVariable String fecha2){
+		LocalDate fecha1LD = LocalDate.parse(fecha1).minusDays(2);
+		LocalDate fecha2LD = LocalDate.parse(fecha2).plusDays(1);
+		return service.findAll()
+				.filter(p->p.getDateOfBirth()
+						.toInstant().atZone(ZoneId.systemDefault())
+						.toLocalDate().isAfter(fecha1LD))
+				.filter(p->p.getDateOfBirth()
+						.toInstant().atZone(ZoneId.systemDefault())
+						.toLocalDate().isBefore(fecha2LD));
+				
+	}
 
 }

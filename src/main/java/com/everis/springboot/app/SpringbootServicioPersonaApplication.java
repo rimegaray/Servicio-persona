@@ -1,5 +1,6 @@
 package com.everis.springboot.app;
 
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -32,8 +33,9 @@ public class SpringbootServicioPersonaApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-		 		 
+		service.findAll().map(p->p.getDateOfBirth())
+		.subscribe(p->log.info("fecha: "+p.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+	
 	}
 	
 	public void reiniciarData() {
