@@ -13,6 +13,6 @@ public interface PersonDao extends ReactiveMongoRepository<Person, String> {
   
   Mono<Person> findByNumberDocument(String document);
   
-  Flux<Person> findByIdRelative(String id);
+  Flux<Person> findByIdRelative(String idPerson);
   
 }

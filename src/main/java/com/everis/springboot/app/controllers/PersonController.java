@@ -49,9 +49,9 @@ public class PersonController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
-  @GetMapping("/{id}")
-  public Mono<Person> findById(@PathVariable String id) {
-    return service.findById(id);
+  @GetMapping("/{idPerson}")
+  public Mono<Person> findById(@PathVariable final String idPerson) {
+    return service.findById(idPerson);
   }
 
   @ApiOperation(value = "Buscar persona por documento ",
@@ -60,7 +60,8 @@ public class PersonController {
       @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
   @GetMapping("/document/{document}")
-  public Mono<Person> findByDocument(@PathVariable String document) {
+  //Metodo usado para buscar a una persona por documento
+  public Mono<Person> findByDocument(@PathVariable final String document) {
     return service.findByNumberDocument(document);
   }
 
@@ -70,7 +71,7 @@ public class PersonController {
       @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
     })
   @GetMapping("/name/{name}")
-  public Flux<Person> findByName(@PathVariable String name) {
+  public Flux<Person> findByName(@PathVariable final String name) {
     return service.findAll().filter(p -> p.getFullName().contains(name));
   }
 
@@ -80,7 +81,7 @@ public class PersonController {
     })
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<Person> create(@RequestBody Person person) {
+  public Mono<Person> create(@RequestBody final Person person) {
     return service.savePerson(person);
   }
 
@@ -95,10 +96,11 @@ public class PersonController {
   @ApiResponses({
         @ApiResponse(code = 201, message = "Actualizacion correcta")
   })
-  @PutMapping("/{id}")
+  @PutMapping("/{idPerson}")
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<Person> update(@RequestBody Person person, @PathVariable String id) {
-    return service.findById(id).map(p -> {
+  public Mono<Person> update(@RequestBody final Person person,
+      @PathVariable final String idPerson) {
+    return service.findById(idPerson).map(p -> {
       p.setFullName(person.getFullName());
       p.setGender(person.getGender());
       p.setDateOfBirth(person.getDateOfBirth());
@@ -122,10 +124,10 @@ public class PersonController {
   @ApiResponses({
         @ApiResponse(code = 204, message = "Eliminado correctamente")
   })
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/{idPerson}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<Void> delete(@PathVariable String id) {
-    return service.findById(id).flatMap(p -> {
+  public Mono<Void> delete(@PathVariable final String idPerson) {
+    return service.findById(idPerson).flatMap(p -> {
       if (p.getId() == null) {
         return Mono.error(new InterruptedException("No existe el producto a eliminar"));
       }
@@ -144,22 +146,22 @@ public class PersonController {
   @ApiResponses({
       @ApiResponse(code = 201, message = "Registro guardado correctamente")
     })
-  @PutMapping("/addRelative/{id}/{nameMember}")
+  @PutMapping("/addRelative/{idPerson}/{nameMember}")
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<Person> addRelative(@PathVariable String id,
-      @PathVariable String nameMember,@RequestBody Person relative) {
+  public Mono<Person> addRelative(@PathVariable final String idPerson,
+      @PathVariable final String nameMember,@RequestBody Person relative) {
 
     relative.setRelation(nameMember);
-    relative.setIdRelative(id);
+    relative.setIdRelative(idPerson);
     return service.savePerson(relative).flatMap(f ->
-        service.findById(id).flatMap(p -> {
-          if (nameMember.equals("parentOne")) { 
+        service.findById(idPerson).flatMap(p -> {
+          if ("parentOne".equals(nameMember)) { 
             p.setParentOne(f.getId());
           }
-          if (nameMember.equals("parentTwo")) {
+          if ("parentTwo".equals(nameMember)) {
             p.setParentTwo(f.getId());
           }
-          if (nameMember.equals("spouse")) {
+          if ("spouse".equals(nameMember)) {
             p.setSpouse(f.getId());
           }
           return Mono.just(p);
@@ -172,9 +174,9 @@ public class PersonController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "Encuentra por lo menos a un familiar")
   })
-  @GetMapping("/findFamily/{id}")
-  public Flux<Person> findFamily(@PathVariable String id) {
-    return service.findByIdRelative(id);
+  @GetMapping("/findFamily/{idPerson}")
+  public Flux<Person> findFamily(@PathVariable final String idPerson) {
+    return service.findByIdRelative(idPerson);
   }
   
   /**
@@ -189,9 +191,10 @@ public class PersonController {
         @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
   })
   @GetMapping("/dateRange/{fecha1}/{fecha2}")
-  public Flux<Person> findByDateRange(@PathVariable String fecha1,@PathVariable String fecha2) {
-    LocalDate fecha1LD = LocalDate.parse(fecha1).minusDays(2);
-    LocalDate fecha2LD = LocalDate.parse(fecha2).plusDays(1);
+  public Flux<Person> findByDateRange(@PathVariable final String fecha1,
+      @PathVariable final String fecha2) {
+    final LocalDate fecha1LD = LocalDate.parse(fecha1).minusDays(2);
+    final LocalDate fecha2LD = LocalDate.parse(fecha2).plusDays(1);
     return service.findAll()
       .filter(p -> p.getDateOfBirth()
         .toInstant().atZone(ZoneId.systemDefault())
