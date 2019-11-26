@@ -19,9 +19,6 @@ public class Person {
   @Id
   private String id;
 
-  @ApiModelProperty(value = "Representa si es estudiante", required = false)
-  private boolean student;
-
   @ApiModelProperty(value = "Id del padre #1", required = false)
   private String parentOne = "No Registrado";
 
@@ -62,9 +59,9 @@ public class Person {
    * Constructor de la clase Person.
 
    */
-  public Person(boolean student, @NotEmpty String fullName, @NotEmpty String gender,
+  public Person(@NotEmpty String fullName, @NotEmpty String gender,
       Date dateOfBirth, @NotEmpty String typeDocument,@NotEmpty String numberDocument) {
-    this.student = student;
+
     this.fullName = fullName;
     this.gender = gender;
     this.dateOfBirth = dateOfBirth;
@@ -81,14 +78,6 @@ public class Person {
     this.id = id;
   }
   
-  public boolean isStudent() {
-    return student;
-  }
-
-  public void setStudent(boolean student) {
-    this.student = student;
-  }
-
   public String getParentOne() {
     return parentOne;
   }

@@ -109,7 +109,6 @@ public class PersonController {
       p.setParentOne(person.getParentOne());
       p.setParentTwo(person.getParentTwo());
       p.setSpouse(person.getSpouse());
-      p.setStudent(person.isStudent());
       return p;
     }).flatMap(p -> service.savePerson(p));
   }
