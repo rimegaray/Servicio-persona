@@ -29,9 +29,9 @@ public class PersonServiceTest {
 	@DisplayName("Test Spring @Autowired Integration")
     @Test
     void testGet() throws ParseException {
-		lista.add(new Person(true, "Juan Carlos Rime Garay", "Masculino",
+		lista.add(new Person("Juan Carlos Rime Garay", "Masculino",
 		        format.parse("1995-08-03"), "DNI", "76563356"));
-		  lista.add(new Person(true, "Juan Carlos Rime Garay", "Masculino",
+		  lista.add(new Person("Juan Carlos Rime Garay", "Masculino",
 			  format.parse("1995-08-03"), "DNI", "76563356"));
         assertEquals(Flux.just(lista), service.findAll());
     }
