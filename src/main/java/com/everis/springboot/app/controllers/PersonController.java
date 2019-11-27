@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class PersonController {
   public Mono<Person> findById(@PathVariable final String idPerson) {
     return service.findById(idPerson);
   }
-
+  
   @ApiOperation(value = "Buscar persona por documento ",
       notes = "Retorna todo sobre la persona encontrada")
   @ApiResponses({
@@ -189,11 +190,11 @@ public class PersonController {
   @ApiResponses({
         @ApiResponse(code = 200, message = "Encuentra por lo menos a una persona")
   })
-  @GetMapping("/dateRange/{fecha1}/{fecha2}")
-  public Flux<Person> findByDateRange(@PathVariable final String fecha1,
-      @PathVariable final String fecha2) {
-    final LocalDate fecha1LD = LocalDate.parse(fecha1).minusDays(2);
-    final LocalDate fecha2LD = LocalDate.parse(fecha2).plusDays(1);
+  @GetMapping("/dateRange/{dateInit}/{dateEnd}")
+  public Flux<Person> findByDateRange(@PathVariable final String dateInit,
+      @PathVariable final String dateEnd) {
+    final LocalDate fecha1LD = LocalDate.parse(dateInit).minusDays(2);
+    final LocalDate fecha2LD = LocalDate.parse(dateEnd).plusDays(1);
     return service.findAll()
       .filter(p -> p.getDateOfBirth()
         .toInstant().atZone(ZoneId.systemDefault())
