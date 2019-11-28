@@ -36,7 +36,7 @@ private ReactiveMongoTemplate mongoTemplate;
 
   @Override
   public void run(String... args) throws Exception {
-    reiniciarData();
+   
 
   }
   
